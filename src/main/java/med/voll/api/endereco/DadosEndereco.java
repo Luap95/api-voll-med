@@ -14,7 +14,7 @@ public record DadosEndereco(
         String cidade,
         @NotBlank
         String uf,
-        @NotBlank @Pattern(regexp = "//d{8}") // Somente numero de 8 digitos
+        @NotBlank @Pattern(regexp = "\\d{8}") // Somente numero de 8 digitos
         String cep) {
 
 }

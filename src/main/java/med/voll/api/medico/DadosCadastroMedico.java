@@ -12,7 +12,9 @@ public record DadosCadastroMedico(
         String nome,
         @NotBlank @Email
         String email,
-        @NotBlank @Pattern(regexp = "//d{4,6}")//Somente numeros de 4 a 6 digitos
+        @NotBlank
+        String telefone,
+        @NotBlank @Pattern(regexp = "\\d{4,6}")//Somente numeros de 4 a 6 digitos
         String crm,
         @NotNull
         Especialidade especialidade,
