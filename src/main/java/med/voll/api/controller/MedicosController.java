@@ -40,6 +40,6 @@ public class MedicosController {
     @Transactional
     public void excluir(@PathVariable Long id){
         var medico = repository.getReferenceById(id);
-        medico.excluir(id);
+        medico.excluir();
     }
 }
