@@ -26,7 +26,7 @@ public class MedicosController {
 
     @GetMapping
     public Page<DadosListagemMedico> listar(@PageableDefault(size=10, sort={"nome"}) Pageable pageable){
-        return repository.findAll(pageable).map(DadosListagemMedico::new);
+        return repository.findAllByAtivoTrue(pageable).map(DadosListagemMedico::new);
     }
 
     @PutMapping
@@ -39,6 +39,7 @@ public class MedicosController {
     @DeleteMapping("/{id}")//Exclusão por parâmetro dinâmico na url
     @Transactional
     public void excluir(@PathVariable Long id){
-        this.repository.deleteById(id);
+        var medico = repository.getReferenceById(id);
+        medico.excluir(id);
     }
 }
