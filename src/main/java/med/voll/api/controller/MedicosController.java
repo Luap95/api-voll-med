@@ -35,4 +35,10 @@ public class MedicosController {
         var medico = repository.getReferenceById(dados.id());
         medico.atualizarInformacoes(dados);
     }
+
+    @DeleteMapping("/{id}")//Exclusão por parâmetro dinâmico na url
+    @Transactional
+    public void excluir(@PathVariable Long id){
+        this.repository.deleteById(id);
+    }
 }
