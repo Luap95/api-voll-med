@@ -1,6 +1,7 @@
 package med.voll.api.domain.medico;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,6 +11,7 @@ import med.voll.api.domain.endereco.Endereco;
 @Table(name = "medicos")
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(of = "id")
 public class Medico {
 
