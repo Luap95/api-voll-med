@@ -1,5 +1,6 @@
 package med.voll.api.domain.agendamento;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -25,11 +26,13 @@ public class Agendamento {
     private Paciente paciente;
     @ManyToOne
     private Medico medico;
-    private LocalDateTime horarioConsulta;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime horario;
 
-    public Agendamento(DadosCadastroAgendamento dados) {
-        this.paciente = dados.paciente();
-        this.medico =  dados.medico();
-        this.horarioConsulta = dados.horarioConsulta();
+
+    public Agendamento(Paciente paciente, Medico medico, LocalDateTime localDateTime) {
+        this.paciente = paciente;
+        this.medico = medico;
+        this.horario = localDateTime;
     }
 }

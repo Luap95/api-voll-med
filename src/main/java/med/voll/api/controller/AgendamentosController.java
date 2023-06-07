@@ -5,6 +5,10 @@ import med.voll.api.domain.agendamento.Agendamento;
 import med.voll.api.domain.agendamento.DadosCadastroAgendamento;
 import med.voll.api.domain.agendamento.AgendamentoRepository;
 import med.voll.api.domain.agendamento.DadosDetalhamentoAgendamento;
+import med.voll.api.domain.medico.Medico;
+import med.voll.api.domain.medico.MedicoRepository;
+import med.voll.api.domain.paciente.Paciente;
+import med.voll.api.domain.paciente.PacienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,20 +18,29 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.time.LocalDateTime;
+
 @RestController
 @RequestMapping("agendamentos")
 public class AgendamentosController {
 
     @Autowired
-    private AgendamentoRepository repository;
+    private AgendamentoRepository agendamentoRepository;
+    @Autowired
+    private MedicoRepository medicoRepository;
+    @Autowired
+    private PacienteRepository pacienteRepository;
     
     @PostMapping
     @Transactional
     public ResponseEntity cadastrar(@RequestBody @Valid DadosCadastroAgendamento dados,
                                     UriComponentsBuilder uriBuilder){
+        Medico medico = medicoRepository.getReferenceById(dados.medicoId());
+        Paciente paciente = pacienteRepository.getReferenceById(dados.pacienteId());
+        Agendamento agendamento = new Agendamento(paciente, medico, LocalDateTime.parse(dados.horarioConsulta()));
 
-        Agendamento agendamento = new Agendamento(dados);
-        this.repository.save(agendamento);
+
+        this.agendamentoRepository.save(agendamento);
         
         var uri = uriBuilder.path("agendamentos/{id}").buildAndExpand(agendamento.getId()).toUri();
         
