@@ -1,10 +1,7 @@
 package med.voll.api.controller;
 
 import jakarta.validation.Valid;
-import med.voll.api.domain.agendamento.Agendamento;
-import med.voll.api.domain.agendamento.DadosCadastroAgendamento;
-import med.voll.api.domain.agendamento.AgendamentoRepository;
-import med.voll.api.domain.agendamento.DadosDetalhamentoAgendamento;
+import med.voll.api.domain.agendamento.*;
 import med.voll.api.domain.medico.Medico;
 import med.voll.api.domain.medico.MedicoRepository;
 import med.voll.api.domain.paciente.Paciente;
@@ -38,7 +35,8 @@ public class AgendamentosController {
         Medico medico = medicoRepository.getReferenceById(dados.medicoId());
         Paciente paciente = pacienteRepository.getReferenceById(dados.pacienteId());
         Agendamento agendamento = new Agendamento(paciente, medico, LocalDateTime.parse(dados.horarioConsulta()));
-
+        AgendamentoService agendamentoService = new AgendamentoService();
+        agendamentoService.validaAgendamento(agendamento);
 
         this.agendamentoRepository.save(agendamento);
         
