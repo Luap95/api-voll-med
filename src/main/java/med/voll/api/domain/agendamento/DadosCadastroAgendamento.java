@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
 public record DadosCadastroAgendamento(
         @NotNull
         Long pacienteId,
-        @NotNull
         Long medicoId,
         @NotBlank
         String horarioConsulta) {
