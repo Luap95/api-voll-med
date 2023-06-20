@@ -28,6 +28,9 @@ public class AgendamentosController {
     private MedicoRepository medicoRepository;
     @Autowired
     private PacienteRepository pacienteRepository;
+    @Autowired
+    private AgendamentoService service;
+
     
     @PostMapping
     @Transactional
@@ -36,10 +39,10 @@ public class AgendamentosController {
         Medico medico = medicoRepository.getReferenceById(dados.medicoId());
         Paciente paciente = pacienteRepository.getReferenceById(dados.pacienteId());
         Agendamento agendamento = new Agendamento(paciente, medico, LocalDateTime.parse(dados.horarioConsulta()));
-        AgendamentoService agendamentoService = new AgendamentoService();
-        agendamentoService.validaAgendamento(agendamento, this.agendamentoRepository);
 
-        this.agendamentoRepository.save(agendamento);
+//        service.validaAgendamento(agendamento);
+//
+//        this.agendamentoRepository.save(agendamento);
         
         var uri = uriBuilder.path("agendamentos/{id}").buildAndExpand(agendamento.getId()).toUri();
         

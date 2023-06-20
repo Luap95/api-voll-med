@@ -4,19 +4,30 @@ import jakarta.annotation.PostConstruct;
 import med.voll.api.domain.medico.Medico;
 import med.voll.api.domain.medico.MedicoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AgendamentoService {
 
-    public void validaAgendamento(Agendamento agendamento, AgendamentoRepository repository){
+    @Autowired
+    private MedicoRepository medicoRepository;
+    @Autowired
+    private AgendamentoRepository agendamentoRepository;
+
+    public void validaAgendamento(Agendamento agendamento){
+        if(agendamento.getMedico() == null){
+
+        }
         //validaHorarioDeAtendimento(agendamento);
 
-        validaMedico(agendamento, repository);
+        validaMedico(agendamento);
     }
 
     private void validaHorarioDeAtendimento(Agendamento agendamento){
@@ -51,12 +62,12 @@ public class AgendamentoService {
     }
 
 
-    public void validaMedico(Agendamento agendamento, AgendamentoRepository repository){
+    public void validaMedico(Agendamento agendamento){
 
         //verifica se o médico tem cadastro  ativo
         if(agendamento.getMedico().getAtivo()){
 
-            Agendamento agenda = repository.findByHorarioAndMedico(agendamento.getHorario(),
+            Agendamento agenda = agendamentoRepository.findByHorarioAndMedico(agendamento.getHorario(),
                     agendamento.getMedico());
             //verifica se o médico já possui uma consulta na data
             if(agenda == null){
