@@ -13,9 +13,7 @@ public class HorarioAntecedenciaValidator implements ConstraintValidator<Horario
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        if (value == null) {
-            return true; // Permite valores nulos, se necessário
-        }
+
         try {
             LocalDateTime valor = LocalDateTime.parse(value);
 
