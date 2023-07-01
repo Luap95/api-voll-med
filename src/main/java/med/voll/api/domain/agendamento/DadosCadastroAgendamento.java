@@ -1,15 +1,12 @@
 package med.voll.api.domain.agendamento;
 
-import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import med.voll.api.domain.agendamento.validacao.HorarioAntecedencia;
-import med.voll.api.domain.agendamento.validacao.HorarioAtendimento;
-import med.voll.api.domain.agendamento.validacao.MedicoAtivo;
-import med.voll.api.domain.agendamento.validacao.PacienteAtivo;
+import med.voll.api.domain.agendamento.validacao.*;
+import org.springframework.validation.annotation.Validated;
 
-import java.time.LocalDateTime;
-
+@Validated
+@ConsultaLimitada
 public record DadosCadastroAgendamento(
         @NotNull @PacienteAtivo
         Long pacienteId,

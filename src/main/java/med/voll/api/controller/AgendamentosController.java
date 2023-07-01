@@ -10,10 +10,8 @@ import med.voll.api.domain.paciente.PacienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.time.LocalDateTime;
@@ -42,10 +40,16 @@ public class AgendamentosController {
 
 //        service.validaAgendamento(agendamento);
 //
-//        this.agendamentoRepository.save(agendamento);
+        this.agendamentoRepository.save(agendamento);
         
         var uri = uriBuilder.path("agendamentos/{id}").buildAndExpand(agendamento.getId()).toUri();
         
         return ResponseEntity.created(uri).body(new DadosDetalhamentoAgendamento(agendamento));
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<String> handleValidationException(MethodArgumentNotValidException ex) {
+        String mensagemErro = "Paciente já possui uma consulta agendada para a data cadastrada";
+        return ResponseEntity.badRequest().body(mensagemErro);
     }
 }
