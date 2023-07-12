@@ -38,18 +38,23 @@ public class AgendamentosController {
         Paciente paciente = pacienteRepository.getReferenceById(dados.pacienteId());
         Agendamento agendamento = new Agendamento(paciente, medico, LocalDateTime.parse(dados.horarioConsulta()));
 
-//        service.validaAgendamento(agendamento);
-//
-        this.agendamentoRepository.save(agendamento);
-        
-        var uri = uriBuilder.path("agendamentos/{id}").buildAndExpand(agendamento.getId()).toUri();
-        
-        return ResponseEntity.created(uri).body(new DadosDetalhamentoAgendamento(agendamento));
+        ResponseEntity response = service.validaAgendamento(agendamento);
+        System.out.println(response);
+        if(response.getStatusCode().value()==200){
+            this.agendamentoRepository.save(agendamento);
+
+            var uri = uriBuilder.path("agendamentos/{id}").buildAndExpand(agendamento.getId()).toUri();
+
+            return ResponseEntity.created(uri).body(new DadosDetalhamentoAgendamento(agendamento));
+        }else {
+            return response;
+        }
+
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<String> handleValidationException(MethodArgumentNotValidException ex) {
-        String mensagemErro = "Paciente já possui uma consulta agendada para a data cadastrada";
-        return ResponseEntity.badRequest().body(mensagemErro);
-    }
+//    @ExceptionHandler(MethodArgumentNotValidException.class)
+//    public ResponseEntity<String> handleValidationException(MethodArgumentNotValidException ex) {
+//        String mensagemErro = "Paciente já possui uma consulta agendada para a data cadastrada";
+//        return ResponseEntity.badRequest().body(mensagemErro);
+//    }
 }

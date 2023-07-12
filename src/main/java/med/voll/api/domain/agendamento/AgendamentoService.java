@@ -3,8 +3,10 @@ package med.voll.api.domain.agendamento;
 import jakarta.annotation.PostConstruct;
 import med.voll.api.domain.medico.Medico;
 import med.voll.api.domain.medico.MedicoRepository;
+import med.voll.api.domain.paciente.PacienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
@@ -20,14 +22,11 @@ public class AgendamentoService {
     private MedicoRepository medicoRepository;
     @Autowired
     private AgendamentoRepository agendamentoRepository;
+    @Autowired
+    private PacienteRepository pacienteRepository;
 
-    public void validaAgendamento(Agendamento agendamento){
-        if(agendamento.getMedico() == null){
-
-        }
-        //validaHorarioDeAtendimento(agendamento);
-
-        validaMedico(agendamento);
+    public ResponseEntity validaAgendamento(Agendamento agendamento){
+        return validaNumeroConsulta(agendamento);
     }
 
     private void validaHorarioDeAtendimento(Agendamento agendamento){
@@ -79,5 +78,18 @@ public class AgendamentoService {
         }else {
             throw new RuntimeException("Não é possível fazer o agendamento de consulta com um médico inativo");
         }
+    }
+    private ResponseEntity validaNumeroConsulta(Agendamento agendamento){
+        var paciente = pacienteRepository.findById(agendamento.getPaciente().getId());
+        ResponseEntity response = null;
+        var consulta = agendamentoRepository.findByHorarioAndPaciente(agendamento.getHorario(), paciente);
+        if(consulta == null){
+            response = ResponseEntity.ok().build();
+        }else {
+            String mensagemErro = "Paciente já possui uma consulta agendada para a data cadastrada";
+            response = ResponseEntity.badRequest().body(mensagemErro);
+        }
+
+        return response;
     }
 }
