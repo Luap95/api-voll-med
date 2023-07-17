@@ -1,8 +1,8 @@
 package med.voll.api.controller;
 
-import jakarta.annotation.PostConstruct;
 import jakarta.validation.Valid;
 import med.voll.api.domain.agendamento.*;
+import med.voll.api.domain.agendamento.validacao.AgendamentoService;
 import med.voll.api.domain.medico.Medico;
 import med.voll.api.domain.medico.MedicoRepository;
 import med.voll.api.domain.paciente.Paciente;
@@ -10,11 +10,11 @@ import med.voll.api.domain.paciente.PacienteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @RestController
 @RequestMapping("agendamentos")
@@ -38,16 +38,29 @@ public class AgendamentosController {
         Paciente paciente = pacienteRepository.getReferenceById(dados.pacienteId());
         Agendamento agendamento = new Agendamento(paciente, medico, LocalDateTime.parse(dados.horarioConsulta()));
 
-        ResponseEntity response = service.validaAgendamento(agendamento);
-        System.out.println(response);
-        if(response.getStatusCode().value()==200){
+        List<ResponseEntity> responses = service.validaAgendamento(agendamento);
+        ResponseEntity response = null;
+
+        int bad = 0;
+        String mensagemErro ="";
+
+        for(ResponseEntity responseEntity : responses){
+            if(responseEntity.getStatusCode().value()==200){
+
+            }else if(responseEntity.getStatusCode().value()==400) {
+                bad++;
+                mensagemErro = mensagemErro + "\n" + responseEntity.getBody();
+            }
+        }
+        System.out.println(bad);
+        if(bad==0){
             this.agendamentoRepository.save(agendamento);
 
             var uri = uriBuilder.path("agendamentos/{id}").buildAndExpand(agendamento.getId()).toUri();
 
             return ResponseEntity.created(uri).body(new DadosDetalhamentoAgendamento(agendamento));
         }else {
-            return response;
+            return ResponseEntity.badRequest().body(mensagemErro);
         }
 
     }
