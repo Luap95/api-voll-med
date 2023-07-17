@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 @Service
 public class AgendamentoService {
@@ -48,14 +49,7 @@ public class AgendamentoService {
         var paciente = pacienteRepository.findById(agendamento.getPaciente().getId());
         ResponseEntity response = null;
         List<Agendamento> consulta = agendamentoRepository.findByHorarioBetweenAndPaciente(
-                LocalDateTime.of(agendamento.getHorario().getYear(),
-                        agendamento.getHorario().getMonth(),
-                        agendamento.getHorario().getDayOfMonth(),
-                        0, 0,0),  LocalDateTime.of(
-                        agendamento.getHorario().getYear(),
-                        agendamento.getHorario().getMonth(),
-                        agendamento.getHorario().getDayOfMonth(),
-                        23,59,59),paciente);
+                getHorarioInicial(agendamento), getHorarioFinal(agendamento),paciente);
         if(consulta.isEmpty()){
             response = ResponseEntity.ok().build();
         }else {
@@ -64,5 +58,26 @@ public class AgendamentoService {
         }
 
         return response;
+    }
+
+    private static LocalDateTime getHorarioFinal(Agendamento agendamento) {
+        return LocalDateTime.of(
+                agendamento.getHorario().getYear(),
+                agendamento.getHorario().getMonth(),
+                agendamento.getHorario().getDayOfMonth(),
+                23, 59, 59);
+    }
+
+    private static LocalDateTime getHorarioInicial(Agendamento agendamento) {
+        return LocalDateTime.of(agendamento.getHorario().getYear(),
+                agendamento.getHorario().getMonth(),
+                agendamento.getHorario().getDayOfMonth(),
+                0, 0, 0);
+    }
+
+    public Medico selecionaMedicoDiponivelAleatoriamente(LocalDateTime horario) {
+        List<Medico> medicos = medicoRepository.findMedicosSemConsultaAgendada(horario);
+        int i = new Random().nextInt(medicos.size());
+        return medicos.get(i);
     }
 }

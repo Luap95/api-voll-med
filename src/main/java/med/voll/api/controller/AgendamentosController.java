@@ -34,7 +34,15 @@ public class AgendamentosController {
     @Transactional
     public ResponseEntity cadastrar(@RequestBody @Valid DadosCadastroAgendamento dados,
                                     UriComponentsBuilder uriBuilder){
-        Medico medico = medicoRepository.getReferenceById(dados.medicoId());
+        Medico medico = null;
+        if(dados.medicoId() == null){
+            medico = service.selecionaMedicoDiponivelAleatoriamente(
+                    LocalDateTime.parse(dados.horarioConsulta()));
+            System.out.println(medico.getNome());
+        }else{
+             medico = medicoRepository.getReferenceById(dados.medicoId());
+        }
+        
         Paciente paciente = pacienteRepository.getReferenceById(dados.pacienteId());
         Agendamento agendamento = new Agendamento(paciente, medico, LocalDateTime.parse(dados.horarioConsulta()));
 

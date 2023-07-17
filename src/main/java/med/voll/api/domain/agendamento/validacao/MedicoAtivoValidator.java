@@ -13,6 +13,9 @@ public class MedicoAtivoValidator implements ConstraintValidator<MedicoAtivo, Lo
 
     @Override
     public boolean isValid(Long id, ConstraintValidatorContext context){
+        if(id == null){
+            return true;
+        }
         var medico = repository.findById(id);
         if (medico.get().getAtivo()){
             return true;

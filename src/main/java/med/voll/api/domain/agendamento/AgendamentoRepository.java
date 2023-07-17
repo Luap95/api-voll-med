@@ -4,6 +4,8 @@ package med.voll.api.domain.agendamento;
 import med.voll.api.domain.medico.Medico;
 import med.voll.api.domain.paciente.Paciente;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -20,5 +22,7 @@ public interface AgendamentoRepository extends JpaRepository<Agendamento, Long> 
     Agendamento findByMedico(Medico medico);
 
     List<Agendamento> findByMedicoAndHorarioBetween(Medico medico, LocalDateTime horario, LocalDateTime localDateTime);
+
+
 }
 
