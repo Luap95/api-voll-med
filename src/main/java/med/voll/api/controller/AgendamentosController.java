@@ -36,9 +36,14 @@ public class AgendamentosController {
                                     UriComponentsBuilder uriBuilder){
         Medico medico = null;
         if(dados.medicoId() == null){
-            medico = service.selecionaMedicoDiponivelAleatoriamente(
-                    LocalDateTime.parse(dados.horarioConsulta()));
-            System.out.println(medico.getNome());
+            try{
+                medico = service.selecionaMedicoDiponivelAleatoriamente(
+                        LocalDateTime.parse(dados.horarioConsulta()));
+                System.out.println(medico.getNome());
+            }catch (Exception e){
+                return ResponseEntity.badRequest().body("Não há médicos diponíveis para o horário selecionado");
+            }
+
         }else{
              medico = medicoRepository.getReferenceById(dados.medicoId());
         }
