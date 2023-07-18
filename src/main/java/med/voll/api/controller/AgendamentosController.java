@@ -78,6 +78,11 @@ public class AgendamentosController {
 
     }
 
+    @DeleteMapping
+    public ResponseEntity cancelar(@RequestBody DadosCancelamentoAgendamento dados){
+        return ResponseEntity.ok();
+    }
+
 //    @ExceptionHandler(MethodArgumentNotValidException.class)
 //    public ResponseEntity<String> handleValidationException(MethodArgumentNotValidException ex) {
 //        String mensagemErro = "Paciente já possui uma consulta agendada para a data cadastrada";

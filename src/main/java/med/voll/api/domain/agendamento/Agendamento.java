@@ -28,11 +28,15 @@ public class Agendamento {
     private Medico medico;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime horario;
+    private boolean ativo;
+    @Enumerated(EnumType.STRING)
+    private MotivoCancelamento motivoCancelamento;
 
 
     public Agendamento(Paciente paciente, Medico medico, LocalDateTime localDateTime) {
         this.paciente = paciente;
         this.medico = medico;
         this.horario = localDateTime;
+        this.ativo = true;
     }
 }
