@@ -15,6 +15,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("agendamentos")
@@ -79,8 +80,18 @@ public class AgendamentosController {
     }
 
     @DeleteMapping
-    public ResponseEntity cancelar(@RequestBody DadosCancelamentoAgendamento dados){
-        return ResponseEntity.ok();
+    @Transactional
+    public ResponseEntity cancelar(@RequestBody @Valid DadosCancelamentoAgendamento dados){
+        var agendamento = agendamentoRepository.getReferenceById(dados.agendamentoId());
+        ResponseEntity response = service.validaHorarioAntecedenciaCancelamento(agendamento);
+        if(response.getStatusCode().value()==200){
+            agendamento.cancelar(dados.motivoCancelamento());
+            return response;
+        }else{
+            return response;
+        }
+
+
     }
 
 //    @ExceptionHandler(MethodArgumentNotValidException.class)

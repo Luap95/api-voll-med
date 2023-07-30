@@ -2,6 +2,8 @@ package med.voll.api.domain.agendamento.validacao;
 
 import med.voll.api.domain.agendamento.Agendamento;
 import med.voll.api.domain.agendamento.AgendamentoRepository;
+import med.voll.api.domain.agendamento.DadosAgendamentoCancelado;
+import med.voll.api.domain.agendamento.DadosDetalhamentoAgendamento;
 import med.voll.api.domain.medico.Medico;
 import med.voll.api.domain.medico.MedicoRepository;
 import med.voll.api.domain.paciente.PacienteRepository;
@@ -79,5 +81,13 @@ public class AgendamentoService {
         List<Medico> medicos = medicoRepository.findMedicosSemConsultaAgendada(horario);
         int i = new Random().nextInt(medicos.size());
         return medicos.get(i);
+    }
+
+    public ResponseEntity validaHorarioAntecedenciaCancelamento(Agendamento agendamento){
+        if(LocalDateTime.now().isBefore(agendamento.getHorario().minusHours(24))){
+            return ResponseEntity.ok().body(new DadosAgendamentoCancelado(agendamento));
+        }
+        return ResponseEntity.badRequest().body("Consulta só pode ser cancelada com 24 horas " +
+                "de antecedência");
     }
 }

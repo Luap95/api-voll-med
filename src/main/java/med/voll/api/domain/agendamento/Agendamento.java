@@ -30,6 +30,7 @@ public class Agendamento {
     private LocalDateTime horario;
     private boolean ativo;
     @Enumerated(EnumType.STRING)
+    @Column(name = "motivo")
     private MotivoCancelamento motivoCancelamento;
 
 
@@ -38,5 +39,10 @@ public class Agendamento {
         this.medico = medico;
         this.horario = localDateTime;
         this.ativo = true;
+    }
+
+    public void cancelar(MotivoCancelamento motivo){
+        this.ativo = false;
+        this.motivoCancelamento = motivo;
     }
 }
